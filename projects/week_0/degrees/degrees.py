@@ -64,16 +64,12 @@ def main():
     load_data(directory)
     print("Data loaded.")
 
-    ''' UNCOMMENT TO TEST PROPERLY'''
-    # source = person_id_for_name(input("Name: "))
-    # if source is None:
-    #     sys.exit("Person not found.")
-    # target = person_id_for_name(input("Name: "))
-    # if target is None:
-    #     sys.exit("Person not found.")
-
-    source = person_id_for_name("kevin bacon")
-    target = person_id_for_name("cary elwes")
+    source = person_id_for_name(input("Name: "))
+    if source is None:
+        sys.exit("Person not found.")
+    target = person_id_for_name(input("Name: "))
+    if target is None:
+        sys.exit("Person not found.")
 
     path = shortest_path(source, target)
 
@@ -96,65 +92,37 @@ def shortest_path(source, target):
     that connect the source to the target.
 
     If no possible path, returns None.
-
-    Implement breadth first search 
     """
-    # given actor is the first state
-    initial_node = Node(state=source, parent=None, action=None)
+    
+    initial_node = Node(state=source, parent=None, action=None) # given actor is the first state
+    frontier = QueueFrontier() # create a queue frontier 
+    explored_states = set() # maintain all explored states
+    frontier.add(initial_node) # add starting actor to the frontier 
+    total_states_explored = 0 # maintain total number of explored states
 
-    # create a queue frontier 
-    frontier = QueueFrontier()
+    while True:
 
-    # maintain all explored states
-    explored_states = set()
+        if frontier.empty(): return None # if the frontier is empty, stop
 
-    # add starting actor to the frontier 
-    frontier.add(initial_node)
-
-    # maintain total number of explored states
-    total_states_explored = 0
-
-    for i in range(20):
-
-        # if the frontier is empty, stop
-        if frontier.empty(): return None
-
-        # take the first node in queue
-        current_node = frontier.remove()
-
-        # add node to explored nodes
-        explored_states.add(current_node.state)
-
-        # increased explored node tally
-        total_states_explored += 1
-
-        # if node is the target
-        if current_node.state == target:
+        current_node = frontier.remove() # take the first node in queue
+        explored_states.add(current_node.state) # add node to explored nodes
+        total_states_explored += 1  # increased explored node tally
+        
+        if current_node.state == target: # if node is the target
             node = current_node
-            # for each explored state
             path = []
             for i in range(total_states_explored):
-                # if node is the source
-                if node.parent == None:
-                    # return the path 
-                    return path
-                # put the state and the action in the path 
-                path.insert(0, (node.action, node.state))
-                # move on to parent node
-                node = node.parent
+                if node.parent == None: return path # if node is the source return the path 
 
-        # if node is not the target, retrieve all neighbour nodes 
-        neighbour_states = neighbors_for_person(current_node.state)
+                path.insert(0, (node.action, node.state)) # put the state and the action in the path so that target is last
+                node = node.parent # move on to parent node
 
-        # for each state
+        neighbour_states = neighbors_for_person(current_node.state) # if node is not the target, retrieve all neighbour nodes 
+
         for film, state in neighbour_states:
-            # print(f"neighbour state: {state} explored_states: {explored_states}")
-            # if it's not already in the frontier and hasn't been explored
             if not frontier.contains_state(state) and state not in explored_states:
-                # create a node for that state
                 child_node = Node(state=state, parent=current_node, action=film)
-                # add it to the frontier 
-                frontier.add(child_node) 
+                frontier.add(child_node) # create a node for that state, add it to the frontier 
 
 def person_id_for_name(name):
     """
