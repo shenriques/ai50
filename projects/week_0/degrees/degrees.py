@@ -75,9 +75,11 @@ def main():
     source = person_id_for_name("kevin bacon")
     target = person_id_for_name("cary elwes")
 
-    # path = shortest_path(source, target)
+    path = shortest_path(source, target)
 
-    return shortest_path(source, target)
+    print(path)
+
+    return 
 
     # for i in range(len(path)):
     #     print(path[i].state)
@@ -134,82 +136,33 @@ def shortest_path(source, target):
         # increased explored node tally
         total_states_explored += 1
 
-        print(f"Current node: {current_node.state} {target}")
-
-        # if node is the target, return it 
+        # if node is the target
         if current_node.state == target:
-            return "Solution Found"
+            node = current_node
+            # for each explored state
+            path = []
+            for i in range(total_states_explored):
+                # if node is the source
+                if node.parent == None:
+                    # return the path 
+                    return path
+                # put the state and the action in the path 
+                path.insert(0, (node.state, node.action))
+                # move on to parent node
+                node = node.parent
 
         # if node is not the target, retrieve all neighbour nodes 
         neighbour_states = neighbors_for_person(current_node.state)
 
         # for each state
         for film, state in neighbour_states:
-            print(f"neighbour state: {state} explored_states: {explored_states}")
+            # print(f"neighbour state: {state} explored_states: {explored_states}")
             # if it's not already in the frontier and hasn't been explored
             if not frontier.contains_state(state) and state not in explored_states:
                 # create a node for that state
                 child_node = Node(state=state, parent=current_node, action=film)
                 # add it to the frontier 
                 frontier.add(child_node) 
-
-        
-    
-    # print(frontier.frontier)
-
-        
-
-        # print(f"current node: {people[current_node.state]['name']} {current_node.parent} {current_node.action}")
-
-        # neighbours = [people[person[1]]['name'] for person in neighbour_states]
-        # print(f"neighbours: {neighbours}")
-
-        # print('-' * 150)
-
-        # for film, state in neighbour_states:
-            
-        #     if state == target: 
-        #     #     path = []
-        #     #     print(f"Solution found after exploring {total_states_explored}")
-
-        #     #     parent = current_node.parent
-        #         node = current_node
-        #         for i in range(total_states_explored):
-        #             child = node.state
-        #             parent_node = node.parent
-        #             parent = parent_node.state
-        #             action = node.action
-        #             print(f"node: {child} parent: {parent} action: {action}")
-        #             node = parent_node
-            #         try:
-            #             tuple_info = (parent.state, parent.action) 
-            #             parent = parent.parent
-            #         except AttributeError: 
-            #             parent = 'None'
-            #             parent = parent
-            #         # print(tuple_info)
-            #         path.append((tuple_info))
-            #     # print(f"Current node: {current_node.state} {current_node.parent} {current_node.action}")
-            #     # print(path)
-            #     return 0
-
-            # if not frontier.contains_state(state) and state not in explored_states:
-            #     # print(f"    new child state: {state}, parent:{current_node.state} {current_node.parent}, action: {current_node.action}")
-            #     try:
-            #         parent = current_node.parent
-            #         print(f"parent: {current_node.state} {parent.state} {current_node.action}")
-            #     except AttributeError:
-            #         pass
-
-
-            #     child_node = Node(state=state, parent=current_node, action=film)
-            #     frontier.add(child_node) 
-
-    # return # frontier.frontie
-
-    # TODO
-    # raise NotImplementedError
-
 
 def person_id_for_name(name):
     """
