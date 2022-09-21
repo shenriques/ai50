@@ -1,0 +1,217 @@
+import csv
+from os import stat
+from platform import node
+import sys
+
+from util import Node, StackFrontier, QueueFrontier
+
+# Maps names to a set of corresponding person_ids
+names = {}
+
+# Maps person_ids to a dictionary of: name, birth, movies (a set of movie_ids)
+people = {}
+
+# Maps movie_ids to a dictionary of: title, year, stars (a set of person_ids)
+movies = {}
+
+
+def load_data(directory):
+    """
+    Load data from CSV files into memory.
+    """
+    # Load people
+    with open(f"{directory}/people.csv", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            people[row["id"]] = {
+                "name": row["name"],
+                "birth": row["birth"],
+                "movies": set()
+            }
+            if row["name"].lower() not in names:
+                names[row["name"].lower()] = {row["id"]}
+            else:
+                names[row["name"].lower()].add(row["id"])
+
+    # Load movies
+    with open(f"{directory}/movies.csv", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            movies[row["id"]] = {
+                "title": row["title"],
+                "year": row["year"],
+                "stars": set()
+            }
+
+    # Load stars
+    with open(f"{directory}/stars.csv", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            try:
+                people[row["person_id"]]["movies"].add(row["movie_id"])
+                movies[row["movie_id"]]["stars"].add(row["person_id"])
+            except KeyError:
+                pass
+
+
+def main():
+    if len(sys.argv) > 2:
+        sys.exit("Usage: python degrees.py [directory]")
+    directory = sys.argv[1] if len(sys.argv) == 2 else "large"
+
+    # Load data from files into memory
+    print("Loading data...")
+    load_data(directory)
+    print("Data loaded.")
+
+    ''' UNCOMMENT TO TEST PROPERLY'''
+    # source = person_id_for_name(input("Name: "))
+    # if source is None:
+    #     sys.exit("Person not found.")
+    # target = person_id_for_name(input("Name: "))
+    # if target is None:
+    #     sys.exit("Person not found.")
+
+    source = person_id_for_name("kevin bacon")
+    target = person_id_for_name("cary elwes")
+
+    # path = shortest_path(source, target)
+
+    return shortest_path(source, target)
+
+    # for i in range(len(path)):
+    #     print(path[i].state)
+    # print(path)
+
+    # if path is None:
+    #     print("Not connected.")
+    # else:
+    #     degrees = len(path)
+    #     print(f"{degrees} degrees of separation.")
+    #     path = [(None, source)] + path
+    #     for i in range(degrees):
+    #         person1 = people[path[i][1]]["name"]
+    #         person2 = people[path[i + 1][1]]["name"]
+    #         movie = movies[path[i + 1][0]]["title"]
+    #         print(f"{i + 1}: {person1} and {person2} starred in {movie}")
+
+
+def shortest_path(source, target):
+    """
+    Returns the shortest list of (movie_id, person_id) pairs
+    that connect the source to the target.
+
+    If no possible path, returns None.
+
+    Implement breadth first search 
+    """
+    # given actor is the first state
+    initial_node = Node(state=source, parent=None, action=None)
+    frontier = QueueFrontier()
+    explored_states = set()
+    frontier.add(initial_node)
+
+    total_states_explored = 0
+
+    str_frontier = []
+    str_explored = []
+
+    for i in range(20):
+
+        # if the frontier is empty, stop
+        if frontier.empty(): return None
+
+        # take the first node
+        current_node = frontier.remove()
+
+        try: str_frontier.remove(people[current_node.state]['name'])
+        except: pass
+
+        print(f"EXPLORING: {people[current_node.state]['name']} \n")
+        total_states_explored += 1
+        # add actor to explored people
+        explored_states.add(current_node.state)
+        str_explored.append(people[current_node.state]['name'])
+
+        # retrieve all neighbour states 
+        neighbour_states = neighbors_for_person(current_node.state)
+
+        for film, state in neighbour_states:
+            
+            print(f"{people[current_node.state]['name']} was in {movies[film]['title']} with {people[state]['name']}")
+            if state == target: 
+                path = []
+                print(f"Solution found after exploring {total_states_explored}")
+
+                parent = current_node.parent
+
+                for i in range(total_states_explored):
+                    # (movie, film) tuple 
+                    tuple_info = (parent.state, parent.action) 
+                    print(tuple_info)
+                    path[:0] = tuple_info
+                    parent = parent.parent
+                # print(f"Current node: {current_node.state} {current_node.parent} {current_node.action}")
+                print(path)
+                return 0
+
+            if not frontier.contains_state(state) and state not in explored_states:
+                child_node = Node(state=state, parent=current_node, action=film)
+                str_frontier.append(people[child_node.state]['name'])
+                # print(f"{people[child_node.state]['name']} added to frontier")
+                # print(f"{child_node.state} has been added to frontier\n")
+                frontier.add(child_node)
+        
+        print(f"in the frontier: {str_frontier}")
+        print(f"already explored: {str_explored}")
+
+        
+        print("-" * 150)
+
+    return # frontier.frontie
+
+    # TODO
+    # raise NotImplementedError
+
+
+def person_id_for_name(name):
+    """
+    Returns the IMDB id for a person's name,
+    resolving ambiguities as needed.
+    """
+    person_ids = list(names.get(name.lower(), set()))
+    if len(person_ids) == 0:
+        return None
+    elif len(person_ids) > 1:
+        print(f"Which '{name}'?")
+        for person_id in person_ids:
+            person = people[person_id]
+            name = person["name"]
+            birth = person["birth"]
+            print(f"ID: {person_id}, Name: {name}, Birth: {birth}")
+        try:
+            person_id = input("Intended Person ID: ")
+            if person_id in person_ids:
+                return person_id
+        except ValueError:
+            pass
+        return None
+    else:
+        return person_ids[0]
+
+
+def neighbors_for_person(person_id):
+    """
+    Returns (movie_id, person_id) pairs for people
+    who starred with a given person.
+    """
+    movie_ids = people[person_id]["movies"]
+    neighbors = set()
+    for movie_id in movie_ids:
+        for person_id in movies[movie_id]["stars"]:
+            neighbors.add((movie_id, person_id))
+    return neighbors
+
+
+if __name__ == "__main__":
+    main()
