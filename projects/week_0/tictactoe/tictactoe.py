@@ -3,6 +3,7 @@ Tic Tac Toe Player
 """
 
 import math
+from collections import Counter
 
 X = "X"
 O = "O"
@@ -22,7 +23,14 @@ def player(board):
     """
     Returns player who has the next turn on a board.
     """
-    raise NotImplementedError
+    flat_board = [play for row in board for play in row] # flatten the board
+    count_dict = Counter(flat_board) # count the plays 
+
+    # assuming X always starts 
+    if board == initial_state or count_dict[X] == count_dict[O]: return X
+    else: return O
+
+print(player(initial_state()))
 
 
 def actions(board):
