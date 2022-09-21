@@ -107,68 +107,105 @@ def shortest_path(source, target):
     """
     # given actor is the first state
     initial_node = Node(state=source, parent=None, action=None)
+
+    # create a queue frontier 
     frontier = QueueFrontier()
+
+    # maintain all explored states
     explored_states = set()
+
+    # add starting actor to the frontier 
     frontier.add(initial_node)
 
+    # maintain total number of explored states
     total_states_explored = 0
-
-    str_frontier = []
-    str_explored = []
 
     for i in range(20):
 
         # if the frontier is empty, stop
         if frontier.empty(): return None
 
-        # take the first node
+        # take the first node in queue
         current_node = frontier.remove()
 
-        try: str_frontier.remove(people[current_node.state]['name'])
-        except: pass
-
-        print(f"EXPLORING: {people[current_node.state]['name']} \n")
-        total_states_explored += 1
-        # add actor to explored people
+        # add node to explored nodes
         explored_states.add(current_node.state)
-        str_explored.append(people[current_node.state]['name'])
 
-        # retrieve all neighbour states 
+        # increased explored node tally
+        total_states_explored += 1
+
+        print(f"Current node: {current_node.state} {target}")
+
+        # if node is the target, return it 
+        if current_node.state == target:
+            return "Solution Found"
+
+        # if node is not the target, retrieve all neighbour nodes 
         neighbour_states = neighbors_for_person(current_node.state)
 
+        # for each state
         for film, state in neighbour_states:
-            
-            print(f"{people[current_node.state]['name']} was in {movies[film]['title']} with {people[state]['name']}")
-            if state == target: 
-                path = []
-                print(f"Solution found after exploring {total_states_explored}")
-
-                parent = current_node.parent
-
-                for i in range(total_states_explored):
-                    # (movie, film) tuple 
-                    tuple_info = (parent.state, parent.action) 
-                    print(tuple_info)
-                    path[:0] = tuple_info
-                    parent = parent.parent
-                # print(f"Current node: {current_node.state} {current_node.parent} {current_node.action}")
-                print(path)
-                return 0
-
+            print(f"neighbour state: {state} explored_states: {explored_states}")
+            # if it's not already in the frontier and hasn't been explored
             if not frontier.contains_state(state) and state not in explored_states:
+                # create a node for that state
                 child_node = Node(state=state, parent=current_node, action=film)
-                str_frontier.append(people[child_node.state]['name'])
-                # print(f"{people[child_node.state]['name']} added to frontier")
-                # print(f"{child_node.state} has been added to frontier\n")
-                frontier.add(child_node)
-        
-        print(f"in the frontier: {str_frontier}")
-        print(f"already explored: {str_explored}")
+                # add it to the frontier 
+                frontier.add(child_node) 
 
         
-        print("-" * 150)
+    
+    # print(frontier.frontier)
 
-    return # frontier.frontie
+        
+
+        # print(f"current node: {people[current_node.state]['name']} {current_node.parent} {current_node.action}")
+
+        # neighbours = [people[person[1]]['name'] for person in neighbour_states]
+        # print(f"neighbours: {neighbours}")
+
+        # print('-' * 150)
+
+        # for film, state in neighbour_states:
+            
+        #     if state == target: 
+        #     #     path = []
+        #     #     print(f"Solution found after exploring {total_states_explored}")
+
+        #     #     parent = current_node.parent
+        #         node = current_node
+        #         for i in range(total_states_explored):
+        #             child = node.state
+        #             parent_node = node.parent
+        #             parent = parent_node.state
+        #             action = node.action
+        #             print(f"node: {child} parent: {parent} action: {action}")
+        #             node = parent_node
+            #         try:
+            #             tuple_info = (parent.state, parent.action) 
+            #             parent = parent.parent
+            #         except AttributeError: 
+            #             parent = 'None'
+            #             parent = parent
+            #         # print(tuple_info)
+            #         path.append((tuple_info))
+            #     # print(f"Current node: {current_node.state} {current_node.parent} {current_node.action}")
+            #     # print(path)
+            #     return 0
+
+            # if not frontier.contains_state(state) and state not in explored_states:
+            #     # print(f"    new child state: {state}, parent:{current_node.state} {current_node.parent}, action: {current_node.action}")
+            #     try:
+            #         parent = current_node.parent
+            #         print(f"parent: {current_node.state} {parent.state} {current_node.action}")
+            #     except AttributeError:
+            #         pass
+
+
+            #     child_node = Node(state=state, parent=current_node, action=film)
+            #     frontier.add(child_node) 
+
+    # return # frontier.frontie
 
     # TODO
     # raise NotImplementedError
