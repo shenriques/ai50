@@ -77,25 +77,17 @@ def main():
 
     path = shortest_path(source, target)
 
-    print(path)
-
-    return 
-
-    # for i in range(len(path)):
-    #     print(path[i].state)
-    # print(path)
-
-    # if path is None:
-    #     print("Not connected.")
-    # else:
-    #     degrees = len(path)
-    #     print(f"{degrees} degrees of separation.")
-    #     path = [(None, source)] + path
-    #     for i in range(degrees):
-    #         person1 = people[path[i][1]]["name"]
-    #         person2 = people[path[i + 1][1]]["name"]
-    #         movie = movies[path[i + 1][0]]["title"]
-    #         print(f"{i + 1}: {person1} and {person2} starred in {movie}")
+    if path is None:
+        print("Not connected.")
+    else:
+        degrees = len(path)
+        print(f"{degrees} degrees of separation.")
+        path = [(None, source)] + path
+        for i in range(degrees):
+            person1 = people[path[i][1]]["name"]
+            person2 = people[path[i + 1][1]]["name"]
+            movie = movies[path[i + 1][0]]["title"]
+            print(f"{i + 1}: {person1} and {person2} starred in {movie}")
 
 
 def shortest_path(source, target):
