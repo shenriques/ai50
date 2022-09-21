@@ -83,11 +83,15 @@ def main():
         degrees = len(path)
         print(f"{degrees} degrees of separation.")
         path = [(None, source)] + path
+        print(path)
         for i in range(degrees):
-            person1 = people[path[i][1]]["name"]
-            person2 = people[path[i + 1][1]]["name"]
-            movie = movies[path[i + 1][0]]["title"]
-            print(f"{i + 1}: {person1} and {person2} starred in {movie}")
+            print(path[i][1])
+            # print(path[i + 1][1])
+            # print("-" * 50)
+            # person1 = people[path[i][1]]["name"]
+            # person2 = people[path[i + 1][1]]["name"]
+            # movie = movies[path[i + 1][0]]["title"]
+            # print(f"{i + 1}: {person1} and {person2} starred in {movie}")
 
 
 def shortest_path(source, target):
@@ -139,7 +143,7 @@ def shortest_path(source, target):
                     # return the path 
                     return path
                 # put the state and the action in the path 
-                path.insert(0, (node.state, node.action))
+                path.insert(0, (node.action, node.state))
                 # move on to parent node
                 node = node.parent
 
