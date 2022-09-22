@@ -53,21 +53,33 @@ def actions(board):
     return available_moves
 
 example_board = [[X, EMPTY, O],
-                [O, X, EMPTY],
-                [EMPTY, EMPTY, X]]
+                [O, X, X],
+                [O, O, EMPTY]]
 
-print(actions(initial_state()))
+# print(actions(initial_state()))
 
-print(actions(example_board))
+# print(actions(example_board))
 
-print(player(example_board))
+# print(player(example_board))
 
 def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    raise NotImplementedError
+    print(f"original board is {board}")
+    # check whose turn it is 
+    current_player = player(board)
+    print(f"player is {current_player}")
+    print(f"action is {action}")
+    # if that action is valid on the given board 
+    if action in actions(board):
+        # place player marker there
+        board[action[0]][action[1]] = current_player
+        return board
+    else:
+        raise Exception("Invalid action")
 
+print(result(example_board, (2,2)))
 
 def winner(board):
     """
