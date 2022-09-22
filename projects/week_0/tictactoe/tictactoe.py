@@ -4,6 +4,7 @@ Tic Tac Toe Player
 
 import math
 from collections import Counter
+from copy import deepcopy
 
 X = "X"
 O = "O"
@@ -66,16 +67,17 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    print(f"original board is {board}")
+    # create deep copy of board
+    board_copy = deepcopy(board)
+
     # check whose turn it is 
-    current_player = player(board)
-    print(f"player is {current_player}")
-    print(f"action is {action}")
+    current_player = player(board_copy)
+
     # if that action is valid on the given board 
-    if action in actions(board):
+    if action in actions(board_copy):
         # place player marker there
-        board[action[0]][action[1]] = current_player
-        return board
+        board_copy[action[0]][action[1]] = current_player
+        return board_copy
     else:
         raise Exception("Invalid action")
 
