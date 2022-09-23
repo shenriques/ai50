@@ -53,9 +53,9 @@ def actions(board):
 
     return available_moves
 
-example_board = [[X, EMPTY, O],
-                [O, X, X],
-                [O, O, EMPTY]]
+example_board = [[X, X, EMPTY],
+                [O, X, O],
+                [EMPTY, EMPTY, EMPTY]]
 
 # print(actions(initial_state()))
 
@@ -81,14 +81,24 @@ def result(board, action):
     else:
         raise Exception("Invalid action")
 
-print(result(example_board, (2,2)))
+# print(result(example_board, (2,2)))
 
 def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    raise NotImplementedError
+    print(board)
 
+    for i in range(3):
+        row = [] 
+        for j in range(3):
+            row.append(board[i][j])
+        # if row contains 3 of the same elements, horizontal win
+        if len(set(row)) == 1 and EMPTY not in row: 
+            winner = X if X in row else O
+            return winner
+
+print(winner(example_board))
 
 def terminal(board):
     """
