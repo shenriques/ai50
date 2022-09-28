@@ -53,15 +53,10 @@ def actions(board):
 
     return available_moves
 
-example_board = [[X, X, EMPTY],
-                [O, X, O],
-                [EMPTY, EMPTY, EMPTY]]
+example_board = [[1, O, O],
+                [X, O, X],
+                [X, O, X]]
 
-# print(actions(initial_state()))
-
-# print(actions(example_board))
-
-# print(player(example_board))
 
 def result(board, action):
     """
@@ -87,18 +82,29 @@ def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    print(board)
+    # diag_1 = []
+    for j in range(3):
 
-    for i in range(3):
-        row = [] 
-        for j in range(3):
-            row.append(board[i][j])
-        # if row contains 3 of the same elements, horizontal win
-        if len(set(row)) == 1 and EMPTY not in row: 
-            winner = X if X in row else O
-            return winner
+        vert = []
 
-print(winner(example_board))
+        for i in range(3):
+            horiz = board[i]
+
+            vert.append(horiz[j])
+
+            # check for winner horizontally 
+            if len(set(horiz)) == 1 and EMPTY not in horiz: 
+                winner = X if X in horiz else O
+                return winner
+
+            # check for winner diagonally 
+            # diag_1.append(horiz[i])
+
+        if len(set(vert)) == 1 and EMPTY not in vert: 
+            winner = X if X in vert else O
+            return winner 
+
+print(f"winner is {winner(example_board)}")
 
 def terminal(board):
     """
