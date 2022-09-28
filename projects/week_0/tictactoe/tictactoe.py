@@ -53,9 +53,9 @@ def actions(board):
 
     return available_moves
 
-example_board = [[O, X, X],
-                [X, X, O],
-                [O, O, O]]
+example_board = [[X, 2, O],
+                [4, O, 6],
+                [O, 8, X]]
 
 
 def result(board, action):
@@ -90,8 +90,9 @@ def winner(board):
         else:
             return None
 
-    # diag_1 = []
     for j in range(3):
+        diag1 = []
+        diag2 = []
         vert = []
 
         for i in range(3):
@@ -102,9 +103,16 @@ def winner(board):
             # check for winner horizontally 
             if check_winner(horiz) != None: return check_winner(horiz)
 
-            # check for winner diagonally 
-            # diag_1.append(horiz[i])
+            diag_dict = {0:2, 1:1, 2:0}
 
+            # create list of diagonal values
+            diag1.append(horiz[i])
+            diag2.append(horiz[diag_dict[i]])
+
+        # check for winner diagonally 
+        if check_winner(diag1) != None: return check_winner(diag1)
+        if check_winner(diag2) != None: return check_winner(diag2)
+        
         # check for winner vertically 
         if check_winner(vert) != None: return check_winner(vert)
 
