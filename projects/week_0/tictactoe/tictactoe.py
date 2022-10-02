@@ -53,9 +53,9 @@ def actions(board):
 
     return available_moves
 
-example_board = [[X, O, X],
-                [X, X, O],
-                [EMPTY, X, O]]
+example_board = [[X, O, O],
+                [X, X, EMPTY],
+                [O, X, O]]
 
 
 def result(board, action):
@@ -137,8 +137,15 @@ def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
     """
-    raise NotImplementedError
+    # if the game is finished
+    if terminal(board): 
+        if winner(board) != None:
+            if winner(board) == X: return 1
+            else: return -1
+        # if there isn't a winner
+        else: return 0
 
+print(f"utility is {utility(example_board)}")
 
 def minimax(board):
     """
