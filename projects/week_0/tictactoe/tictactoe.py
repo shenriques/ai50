@@ -53,9 +53,9 @@ def actions(board):
 
     return available_moves
 
-example_board = [[X, 2, O],
-                [4, O, 6],
-                [O, 8, X]]
+example_board = [[X, O, X],
+                [X, X, O],
+                [EMPTY, X, O]]
 
 
 def result(board, action):
@@ -122,7 +122,15 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    raise NotImplementedError
+    flat_board = [play for row in board for play in row] 
+
+    # if there is a winner or no more available moves
+    if winner(board) != None or EMPTY not in flat_board:
+        return True
+    else:
+        return False
+
+print(f"terminal is {terminal(example_board)}")
 
 
 def utility(board):
