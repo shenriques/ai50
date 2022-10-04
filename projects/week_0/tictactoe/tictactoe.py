@@ -53,9 +53,9 @@ def actions(board):
 
     return available_moves
 
-example_board = [[X, O, O],
-                [X, X, EMPTY],
-                [O, X, O]]
+example_board = [[X, O, ],
+                [X, EMPTY, EMPTY],
+                [EMPTY, EMPTY, EMPTY]]
 
 
 def result(board, action):
@@ -105,9 +105,13 @@ def winner(board):
 
             diag_dict = {0:2, 1:1, 2:0}
 
-            # create list of diagonal values
-            diag1.append(horiz[i])
-            diag2.append(horiz[diag_dict[i]])
+            # check if the board is filled out diagonally
+            try:
+                # create list of diagonal values
+                diag1.append(horiz[i])
+                diag2.append(horiz[diag_dict[i]])
+            except:
+                return None
 
         # check for winner diagonally 
         if check_winner(diag1) != None: return check_winner(diag1)
@@ -116,7 +120,6 @@ def winner(board):
         # check for winner vertically 
         if check_winner(vert) != None: return check_winner(vert)
 
-print(f"winner is {winner(example_board)}")
 
 def terminal(board):
     """
@@ -130,9 +133,6 @@ def terminal(board):
     else:
         return False
 
-print(f"terminal is {terminal(example_board)}")
-
-
 def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
@@ -145,10 +145,7 @@ def utility(board):
         # if there isn't a winner
         else: return 0
 
-print(f"utility is {utility(example_board)}")
-
 def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    raise NotImplementedError
