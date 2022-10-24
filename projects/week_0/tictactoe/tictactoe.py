@@ -153,7 +153,7 @@ def minimax(board):
         # if game over, return utility of final board 
         if terminal(board): return utility(board)
         
-        x = -5
+        x = -math.inf
 
         # for all possible moves
         for action in actions(board):
@@ -173,7 +173,7 @@ def minimax(board):
         optimal_action = ()
         if terminal(board): return ["Game Over", utility(board)]
 
-        x = 5
+        x = math.inf
 
         for action in actions(board):
             max_utility = maximise(result(board, action))
