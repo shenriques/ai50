@@ -188,10 +188,12 @@ def minimax(board):
 
     if player(board) == X:
         return maximise(board)[1]
+    if player(board) == O:
+        return minimise(board)[1]
 
 
-example_board = [[X, O, EMPTY],
-                [X, EMPTY, EMPTY],
-                [O, EMPTY, EMPTY]]
+example_board = [[X, X, O],
+                [O, O, X],
+                [X, O, O]]
 
 print(f"minimax is {minimax(example_board)}") 
