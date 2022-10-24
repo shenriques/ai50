@@ -171,7 +171,7 @@ def minimax(board):
 
     def minimise(board):
         optimal_action = ()
-        if terminal(board): return utility(board)
+        if terminal(board): return ["Game Over", utility(board)]
 
         x = 5
 
@@ -192,7 +192,7 @@ def minimax(board):
         return minimise(board)[1]
 
 
-example_board = [[X, X, O],
+example_board = [[X, X, X],
                 [O, O, X],
                 [X, O, O]]
 
