@@ -53,9 +53,6 @@ def actions(board):
 
     return available_moves
 
-example_board = [[X, O, ],
-                [X, EMPTY, EMPTY],
-                [EMPTY, EMPTY, EMPTY]]
 
 
 def result(board, action):
@@ -149,3 +146,52 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
+
+    def maximise(board):
+        optimal_action = ()
+
+        # if game over, return utility of final board 
+        if terminal(board): return utility(board)
+        
+        x = -5
+
+        # for all possible moves
+        for action in actions(board):
+            # get minimised utility of board
+            min_utility = minimise(result(board, action))
+            
+            # avoids int not subcript error AND list not comparable to tuple error 
+            if isinstance(min_utility, list):
+                min_utility = min_utility[0]
+            # if outcome is better than current best outcome
+            if min_utility > x:
+                x = min_utility
+                optimal_action = action 
+        return [x, optimal_action]
+
+    def minimise(board):
+        optimal_action = ()
+        if terminal(board): return utility(board)
+
+        x = 5
+
+        for action in actions(board):
+            max_utility = maximise(result(board, action))
+            
+            if isinstance(max_utility, list):
+                max_utility = max_utility[0]
+            
+            if max_utility < x:
+                x = max_utility
+                optimal_action = action 
+        return [x, optimal_action]
+
+    if player(board) == X:
+        return maximise(board)[1]
+
+
+example_board = [[X, O, EMPTY],
+                [X, EMPTY, EMPTY],
+                [O, EMPTY, EMPTY]]
+
+print(f"minimax is {minimax(example_board)}") 
